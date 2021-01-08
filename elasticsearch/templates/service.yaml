@@ -8,6 +8,7 @@ metadata:
   name: {{ template "elasticsearch.uname" . }}
 {{- end }}
   labels:
+    app.kubernetes.io/managed-by: "Helm"
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}"
@@ -16,7 +17,8 @@ metadata:
 {{ toYaml .Values.service.labels | indent 4}}
 {{- end }}
   annotations:
-{{ toYaml .Values.service.annotations | indent 4 }}
+    meta.helm.sh/release-name: {{ .Release.Name | quote }}
+    meta.helm.sh/release-namespace: {{ .Release.Namespace | quote }}
 spec:
   type: {{ .Values.service.type }}
   selector:
@@ -53,6 +55,7 @@ metadata:
   name: {{ template "elasticsearch.uname" . }}-headless
 {{- end }}
   labels:
+    app.kubernetes.io/managed-by: "Helm"
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}"
@@ -61,6 +64,8 @@ metadata:
 {{ toYaml .Values.service.labelsHeadless | indent 4 }}
 {{- end }}
   annotations:
+    meta.helm.sh/release-name: {{ .Release.Name | quote}}
+    meta.helm.sh/release-namespace: {{ .Release.Namespace | quote }}
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
 spec:
   clusterIP: None # This is needed for statefulset hostnames like elasticsearch-0 to resolve
